@@ -8,8 +8,9 @@ env:
     TF_VERSION: "1.1.7"
 
 phases:
-  configuration:
+  install:
     commands:
+      # Install terraform
       - cd /usr/bin
       - curl -s -qL -o terraform.zip https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip
       - unzip -o terraform.zip
@@ -19,7 +20,7 @@ phases:
       - REPOSITORY_URI=564667093156.dkr.ecr.us-east-2.amazonaws.com/test
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - IMAGE_TAG=${COMMIT_HASH:=latest-codebuild}
-  build:
+  pre_build:
     commands:
       # Build docker image 
       - docker build -t $REPOSITORY_URI:latest "$CODEBUILD_SRC_DIR"/App
@@ -27,6 +28,8 @@ phases:
       # Push docker image to AWS
       - docker push $REPOSITORY_URI:latest
       - docker push $REPOSITORY_URI:$IMAGE_TAG
+  build:
+    commands:
       # Run terraform
       - cd "$CODEBUILD_SRC_DIR"/terraform
       - terraform init
