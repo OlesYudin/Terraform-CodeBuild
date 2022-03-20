@@ -37,7 +37,7 @@ sg_port_cidr = {
 app_name  = "password-generator"
 # Container image tag
 image_tag = "latest"
-registry_url = "564667093156.dkr.ecr.us-east-2.amazonaws.com"
+registry_url = "564667093156.dkr.ecr.us-east-2.amazonaws.com/test"
 
 
 # ----------
@@ -50,7 +50,7 @@ github_credential = ""
 # Owner of github account
 github_owner = ""
 # Default github url repository
-github_url = "https://github.com/OlesYudin/ECS-CodeBuild"
+github_url = "https://github.com/OlesYudin/Terraform-CodeBuild"
 # Default path to buildspec.yml
 buildspec = "configuration/buildspec.yml"
 # Default branch for commiting
