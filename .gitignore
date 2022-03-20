@@ -31,4 +31,4 @@ override.tf.json
 .terraform.lock.hcl
 
 # Ignore directory with sensetive data
-.credentials
+.credential
