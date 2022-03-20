@@ -33,4 +33,4 @@ phases:
       # Run terraform
       - cd "$CODEBUILD_SRC_DIR"/terraform
       - terraform init
-      - terraform apply -auto-approve -lock=false
+      - terraform apply -auto-approve -target=module.cluster -lock=false
