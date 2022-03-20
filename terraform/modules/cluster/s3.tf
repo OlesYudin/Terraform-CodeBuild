@@ -1,6 +1,6 @@
 # TFstate s3
 resource "aws_s3_bucket" "terraform_state" {
-  bucket = "demo-tfstate-s3-${var.env}"
+  bucket = "tfstate-demo-tfstate-s3-${var.env}"
   # Enable versioning
   versioning {
     enabled = true

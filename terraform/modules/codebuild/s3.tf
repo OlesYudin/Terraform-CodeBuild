@@ -1,6 +1,6 @@
 # S3 bucker for codebuild
 resource "aws_s3_bucket" "codebuild_cache" {
-  bucket = "demo-codebuild-s3-${var.env}"
+  bucket = "cache-demo-codebuild-s3-${var.env}"
   acl    = "private"
   # Enable versioning in bucket
   versioning {

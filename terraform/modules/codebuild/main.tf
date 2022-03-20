@@ -1,10 +1,9 @@
 # CodeBuild Project
 resource "aws_codebuild_project" "password-generator-codebuild-plan" {
-  depends_on    = [aws_iam_role.codebuild-iam-role]
   name          = "Password-generator-${var.env}-codebuild-plan"
   description   = "CodeBuild project for password generator application"
   build_timeout = "5"
-  service_role  = aws_iam_role.codebuild-iam-role.arn # TODO: Create own IAM role and policy
+  service_role  = aws_iam_role.codebuild-iam-role.arn
 
   # Артефакты, которые можно хранить в S3 bucket в качестве архива. 
   artifacts {
@@ -45,6 +44,11 @@ resource "aws_codebuild_project" "password-generator-codebuild-plan" {
   tags = {
     Environment = var.env
   }
+
+  depends_on = [
+    aws_iam_role.codebuild-iam-role,
+    aws_ssm_parameter.ssm-github-auth
+  ]
 }
 
 # AWS Pipeline
