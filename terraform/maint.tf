@@ -35,7 +35,16 @@ module "cluster" {
   private_subnet = var.private_subnet
   sg_port_cidr   = var.sg_port_cidr
 
-  registry_url = var.registry_url
+  # Data from another modules
+  registry_url = module.ecr.registry_url # URL of repository
+}
+
+module "ecr" {
+  source = "./modules/ecr"
+
+  # Default variables for ECR module
+  region   = var.region
+  app_name = var.app_name
 }
 
 module "codebuild" {

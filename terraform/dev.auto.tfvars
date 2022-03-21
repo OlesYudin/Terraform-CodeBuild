@@ -37,7 +37,6 @@ sg_port_cidr = {
 app_name  = "password-generator"
 # Container image tag
 image_tag = "latest"
-registry_url = "564667093156.dkr.ecr.us-east-2.amazonaws.com/test"
 
 
 # ----------

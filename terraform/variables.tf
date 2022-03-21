@@ -94,10 +94,6 @@ variable "image_tag" {
   description = "Image tag for application"
   type        = string
 }
-# Container repository
-variable "registry_url" {
-  type = string
-}
 
 
 # Cluster

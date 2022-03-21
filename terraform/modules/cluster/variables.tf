@@ -1,8 +1,12 @@
 # ECS and ECR
-variable "env" {}          # Environment for ECS
-variable "app_name" {}     # App name for ECS
-variable "registry_url" {} # URL of repository that will push to ECS
-variable "image_tag" {}    # Docker image tag
+variable "env" {}       # Environment for ECS
+variable "app_name" {}  # App name for ECS
+variable "image_tag" {} # Docker image tag
+# Container repository
+variable "registry_url" {
+  description = "URL of repository that will push to ECS"
+  type        = string
+}
 
 # Network
 # CIDR for VPC
