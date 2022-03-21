@@ -34,6 +34,11 @@ resource "aws_iam_role_policy_attachment" "codebuild-ecs-iam-policy" {
   role       = aws_iam_role.codebuild-iam-role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
+# Atach ECS policy to codebuild
+resource "aws_iam_role_policy_attachment" "codebuild-ecs-deploy-iam-policy" {
+  role       = aws_iam_role.codebuild-iam-role.name
+  policy_arn = "arn:aws:iam::aws:policy/AWSCodeDeployRoleForECS"
+}
 # Attach ECR policy to codebuild
 resource "aws_iam_role_policy_attachment" "codebuild-ecr-iam-policy" {
   role       = aws_iam_role.codebuild-iam-role.name
