@@ -11,6 +11,9 @@ variable "github_url" {}        # Default github url
 variable "github_branch" {}     # Default branch for commiting
 
 # Codebuild
-variable "buildspec" {}    # Default path to buildspec.yml
-variable "registry_url" {} # ECR Registri URL
+variable "buildspec" {}               # Default path to buildspec.yml
+variable "registry_url" {}            # ECR Registri URL
+variable "task_definition_family" {}  # Name of task definition family
+variable "task_definition_cluster" {} # Name of task definition cluster
+variable "task_definition_service" {} # Name of task definition service
 

@@ -13,11 +13,16 @@ phases:
       - cd /usr/bin
       - curl -s -qL -o terraform.zip https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip
       - unzip -o terraform.zip
-      
+
+      # Install jq (tool for json, that need ECS)
+      - apt install -y jq
+
       # Add environment
       - REPOSITORY_URI=${ECR_APP_URL}
+      - ECR_IMAGE="{REPOSITORY_URI}:${CODEBUILD_RESOLVED_SOURCE_VERSION}"
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
-      - IMAGE_TAG=${ENV}-${COMMIT_HASH:=latest-codebuild}
+      - TIMESTAMP=$(date +"%d.%m.%y_%H.%M")
+      - IMAGE_TAG=${ENV}-${COMMIT_HASH:=latest-codebuild}-{TIMESTAMP}
   pre_build:
     commands:
       # Login to AWS
@@ -31,9 +36,27 @@ phases:
       - docker push $REPOSITORY_URI:$IMAGE_TAG
   build:
     commands:
-      # Run terraform
-      - aws ecs describe-task-definition --task-definition password-generator-dev-task-definition > taskDefinition.json
+      # Update ECS cluster
+      # Describe task definition
+      - TASK_DEFINITION=$(aws ecs describe-task-definition --task-definition "$TASK_DEFINITION_FAMILY" --region "$AWS_REGION")
+      # Remove useless data from task definitions:
+      # 1. taskDefinitionArn
+      # 2. revision
+      # 3. status
+      # 4. requiresAttributes
+      # 5. compatibilities
+      - NEW_TASK_DEFINTIION=$(echo $TASK_DEFINITION | jq --arg IMAGE "$ECR_IMAGE" '.taskDefinition | .containerDefinitions[0].image = $IMAGE | del(.taskDefinitionArn) | del(.revision) | del(.status) | del(.requiresAttributes) | del(.compatibilities)')
+      # Register new task definition
+      - NEW_TASK_INFO=$(aws ecs register-task-definition --region "$AWS_REGION" --cli-input-json "$NEW_TASK_DEFINTIION")
+      # Output number of revision for task definition
+      - NEW_REVISION=$(echo $NEW_TASK_INFO | jq '.taskDefinition.revision')
+      # Update ECS task-definition with new docker image tag
+      - aws ecs update-service --cluster ${TASK_DEFINITION_CLUSTER} \
+                       --service ${TASK_DEFINITION_SERVICE} \
+                       --task-definition ${TASK_DEFINITION_FAMILY}:${NEW_REVISION}
 
+
+      # Run terraform
       - cd "$CODEBUILD_SRC_DIR"/terraform
       - terraform init
       - terraform apply -auto-approve -target=module.cluster -lock=false

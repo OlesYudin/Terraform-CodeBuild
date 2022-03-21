@@ -36,6 +36,18 @@ resource "aws_codebuild_project" "password-generator-codebuild-plan" {
       name  = "ECR_APP_URL"
       value = var.registry_url
     }
+    environment_variable {
+      name  = "TASK_DEFINITION_FAMILY"
+      value = var.task_definition_family
+    }
+    environment_variable {
+      name  = "TASK_DEFINITION_CLUSTER"
+      value = var.task_definition_cluster
+    }
+    environment_variable {
+      name  = "TASK_DEFINITION_SERVICE"
+      value = var.task_definition_service
+    }
   }
 
   source {

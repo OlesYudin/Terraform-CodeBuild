@@ -14,3 +14,15 @@ output "alb_dns" {
 output "s3_url_tf_state" {
   value = aws_s3_bucket.terraform_state.bucket_regional_domain_name
 }
+# Output name of task definition
+output "task_definition_family" {
+  value = aws_ecs_task_definition.task-definition.family
+}
+# Output name of ECS cluster
+output "task_definition_cluster" {
+  value = aws_ecs_cluster.ecs-cluster.name
+}
+# Output name of ECS service
+output "task_definition_service" {
+  value = aws_ecs_service.password-generator.name
+}

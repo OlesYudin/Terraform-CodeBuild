@@ -63,5 +63,8 @@ module "codebuild" {
   github_branch     = var.github_branch
   buildspec         = var.buildspec # Default path for buildspec.path
   # Envitonment variables for codebuild
-  registry_url = module.ecr.registry_url # ECR registy URL
+  registry_url    = module.ecr.registry_url # ECR registy URL
+  task_definition_family = module.cluster.task_definition_family # Name of task definition 
+  task_definition_cluster = module.cluster.task_definition_cluster # Name of ECS cluster
+  task_definition_service = module.cluster.task_definition_service # Name of ECS service
 }
