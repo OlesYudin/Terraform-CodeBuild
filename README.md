@@ -42,6 +42,8 @@
 
 ### Пример скрипта для изменения task definition:
 
+Данный скрипт будет обновлять task definition ссылаясь на заранее подготовленный тег, но даже если тег будет один и тот же, все равно он запустит новый таск и убьет старый
+
 ```
 ECR_IMAGE="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}:${CODEBUILD_RESOLVED_SOURCE_VERSION}"
 TASK_DEFINITION=$(aws ecs describe-task-definition --task-definition "$TASK_FAMILY" --region "$AWS_DEFAULT_REGION")
