@@ -13,15 +13,18 @@ phases:
       - cd /usr/bin
       - curl -s -qL -o terraform.zip https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip
       - unzip -o terraform.zip
-
+  pre_build:
+    commands:
       # Add environment
       - REPOSITORY_URI=${ECR_APP_URL}
       - ECR_IMAGE="{REPOSITORY_URI}:${CODEBUILD_RESOLVED_SOURCE_VERSION}"
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
-      - TIMESTAMP=$(date +"%d.%m.%y_%H.%M")
+      # Get current time in Ukraine
+      - TIMESTAMP=$(TZ="Europe/Zaporozhye" date +"%d.%m.%y_%H.%M")
+      # This tag based on your env, hash of github commit and current time in Ukraine
+      # Example: dev-a3bae24-21.03.22_13.26
       - IMAGE_TAG=${ENV}-${COMMIT_HASH:=latest-codebuild}-${TIMESTAMP}
-  pre_build:
-    commands:
+
       # Login to AWS
       - aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
       
@@ -51,9 +54,8 @@ phases:
       - NEW_REVISION=$(echo $NEW_TASK_INFO | jq '.taskDefinition.revision')
       # Update ECS task-definition with new docker image tag
       - aws ecs update-service --cluster ${TASK_DEFINITION_CLUSTER} --service ${TASK_DEFINITION_SERVICE} --task-definition ${TASK_DEFINITION_FAMILY}:${NEW_REVISION}
-
-
-
+  post_build:
+    commands:
       # Run terraform
       - cd "$CODEBUILD_SRC_DIR"/terraform
       - terraform init

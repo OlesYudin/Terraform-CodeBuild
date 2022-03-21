@@ -17,10 +17,19 @@
 - `Artifacts` -
 - `Logs` - обозначает где будут хранится логи проекта, например логи сборки проекта
 
+## Security:
+
+В AWS есть два ресурса для хранения чувствительных данных `secrets manager` и `service manager/parameter store`
+
+- `secrets manager` - можно использовать для хранения паролей, токенов. **Цена: 0.4$ за одно значение в месяц**
+- `parameter store` - в нем можно хранить любые внешние переменные, в том числе и чувствительные. Но, нельзя создать пару, к примеру username-password. Можно создать отдельно username и отдельно password, что не всегда удобно. **Цена: бесплатно**
+
+Для того что бы запустить codebuild, нужно авторизоваться в аккаунте, где хранится код проекта, к примеру GitHub. В таком случае, codebuild должен знать либо: _username, password_; либо _Github AUth token_
+
+После создания токена, нужно его передать в AWS.
+
 ```
-Почитай:
-- System manager and Parametr store
-- Terraform SSM
-- env variables TF_VAR
-- Реши проблему, что бы credentials не уходили в git hub, потому что access token сразу удаляется
+если токен от GitHub попадет в GitHub аккаунт, он удалится
 ```
+
+У terraform есть ресурс "aws_codebuild_source_credential", его можно использовать для передачи ключа в AWS
