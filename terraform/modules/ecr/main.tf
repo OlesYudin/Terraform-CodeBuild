@@ -1,7 +1,7 @@
 # Create ECR repository
 resource "aws_ecr_repository" "ecr_repository" {
-  name                 = var.app_name
-  image_tag_mutability = "IMMUTABLE"
+  name = var.app_name
+  #   image_tag_mutability = "IMMUTABLE" # If immutable you cant write to same tag in 1 repo
 
   image_scanning_configuration {
     scan_on_push = false
