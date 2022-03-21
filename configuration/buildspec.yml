@@ -22,7 +22,7 @@ phases:
       - ECR_IMAGE="{REPOSITORY_URI}:${CODEBUILD_RESOLVED_SOURCE_VERSION}"
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - TIMESTAMP=$(date +"%d.%m.%y_%H.%M")
-      - IMAGE_TAG=${ENV}-${COMMIT_HASH:=latest-codebuild}-{TIMESTAMP}
+      - IMAGE_TAG=${ENV}-${COMMIT_HASH:=latest-codebuild}-${TIMESTAMP}
   pre_build:
     commands:
       # Login to AWS
