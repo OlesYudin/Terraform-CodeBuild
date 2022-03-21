@@ -50,9 +50,8 @@ phases:
       # Output number of revision for task definition
       - NEW_REVISION=$(echo $NEW_TASK_INFO | jq '.taskDefinition.revision')
       # Update ECS task-definition with new docker image tag
-      - aws ecs update-service --cluster ${TASK_DEFINITION_CLUSTER} \
-                       --service ${TASK_DEFINITION_SERVICE} \
-                       --task-definition ${TASK_DEFINITION_FAMILY}:${NEW_REVISION}
+      - aws ecs update-service --cluster ${TASK_DEFINITION_CLUSTER} --service ${TASK_DEFINITION_SERVICE} --task-definition ${TASK_DEFINITION_FAMILY}:${NEW_REVISION}
+
 
 
       # Run terraform
