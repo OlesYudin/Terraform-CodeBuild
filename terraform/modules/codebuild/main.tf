@@ -25,8 +25,16 @@ resource "aws_codebuild_project" "password-generator-codebuild-plan" {
     privileged_mode             = true              # All command in pipeline will run with sudo
 
     environment_variable {
-      name  = "environment"
+      name  = "ENV"
       value = var.env
+    }
+    environment_variable {
+      name  = "AWS_REGION"
+      value = var.region
+    }
+    environment_variable {
+      name  = "ECR_APP_URL"
+      value = var.registry_url
     }
   }
 

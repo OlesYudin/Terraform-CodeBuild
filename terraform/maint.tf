@@ -52,6 +52,7 @@ module "codebuild" {
 
   # Default variables for Codebuild module
   # Application
+  region   = var.region
   env      = var.env
   app_name = var.app_name
   app_port = var.app_port
@@ -61,4 +62,6 @@ module "codebuild" {
   github_url        = var.github_url
   github_branch     = var.github_branch
   buildspec         = var.buildspec # Default path for buildspec.path
+  # Envitonment variables for codebuild
+  registry_url = module.ecr.registry_url # ECR registy URL
 }

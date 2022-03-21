@@ -10,14 +10,14 @@ output "vpc_ip" {
 output "alb_dns" {
   value = module.cluster.alb_dns
 }
-# # Output registry ID
-# output "registry_id" {
-#   value = module.ecr.registry_id
-# }
-# # Output registry URL
-# output "registry_url" {
-#   value = module.ecr.registry_url
-# }
+# Output AWS account ID
+output "account_id" {
+  value = module.ecr.account_id
+}
+# Output registry URL
+output "registry_url" {
+  value = module.ecr.registry_url
+}
 # Output URL of S3 Bucket for tf_state
 output "s3_url_tf_state" {
   value = module.cluster.s3_url_tf_state

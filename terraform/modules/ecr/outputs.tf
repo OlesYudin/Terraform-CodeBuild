@@ -1,5 +1,5 @@
 # Output regestry id
-output "registry_id" {
+output "account_id" {
   value = data.aws_ecr_repository.ecr_repository.registry_id
 }
 # Output URL of registry

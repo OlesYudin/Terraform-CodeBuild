@@ -2,7 +2,6 @@ version: 0.2
 
 env:
   variables:
-    AWS_REGION: "us-east-2"
     APP_NAME: "password-generator"
     ENV: "dev"
     TF_VERSION: "1.1.7"
@@ -14,14 +13,16 @@ phases:
       - cd /usr/bin
       - curl -s -qL -o terraform.zip https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip
       - unzip -o terraform.zip
-      # Login to AWS
-      - aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 564667093156.dkr.ecr.us-east-2.amazonaws.com
+      
       # Add environment
-      - REPOSITORY_URI=564667093156.dkr.ecr.us-east-2.amazonaws.com/test
+      - REPOSITORY_URI=${ECR_APP_URL}
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
-      - IMAGE_TAG=${COMMIT_HASH:=latest-codebuild}
+      - IMAGE_TAG=${ENV}-${COMMIT_HASH:=latest-codebuild}
   pre_build:
     commands:
+      # Login to AWS
+      - aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
+      
       # Build docker image 
       - docker build -t $REPOSITORY_URI:latest "$CODEBUILD_SRC_DIR"/app
       - docker build -t $REPOSITORY_URI:$IMAGE_TAG "$CODEBUILD_SRC_DIR"/app
@@ -31,6 +32,8 @@ phases:
   build:
     commands:
       # Run terraform
+      - aws ecs describe-task-definition --task-definition password-generator-dev-task-definition > taskDefinition.json
+
       - cd "$CODEBUILD_SRC_DIR"/terraform
       - terraform init
       - terraform apply -auto-approve -target=module.cluster -lock=false
