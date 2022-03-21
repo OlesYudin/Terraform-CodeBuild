@@ -24,12 +24,29 @@
 - `secrets manager` - можно использовать для хранения паролей, токенов. **Цена: 0.4$ за одно значение в месяц**
 - `parameter store` - в нем можно хранить любые внешние переменные, в том числе и чувствительные. Но, нельзя создать пару, к примеру username-password. Можно создать отдельно username и отдельно password, что не всегда удобно. **Цена: бесплатно**
 
-Для того что бы запустить codebuild, нужно авторизоваться в аккаунте, где хранится код проекта, к примеру GitHub. В таком случае, codebuild должен знать либо: _username, password_; либо _Github AUth token_
-
-После создания токена, нужно его передать в AWS.
+Для того что бы запустить codebuild, нужно авторизоваться в аккаунте, где хранится код проекта, к примеру GitHub. В таком случае, codebuild должен знать либо: _username, password_; либо _Github OAuth token_. После создания токена, нужно его передать в AWS.
 
 ```
 если токен от GitHub попадет в GitHub аккаунт, он удалится
 ```
 
-У terraform есть ресурс "aws_codebuild_source_credential", его можно использовать для передачи ключа в AWS
+У terraform есть ресурс `aws_codebuild_source_credential`, его можно использовать для передачи ключа в AWS
+
+## ECS
+
+Что бы изменить докер образ в task definition и он успешно вступил в силу, необходимо:
+
+1. Вывести существующий task definition
+2. Изменить тег или номер сборки task definition
+3. Запустить новый task definition
+
+### Пример скрипта для изменения task definition:
+
+```
+ECR_IMAGE="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}:${CODEBUILD_RESOLVED_SOURCE_VERSION}"
+TASK_DEFINITION=$(aws ecs describe-task-definition --task-definition "$TASK_FAMILY" --region "$AWS_DEFAULT_REGION")
+NEW_TASK_DEFINTIION=$(echo $TASK_DEFINITION | jq --arg IMAGE "$ECR_IMAGE" '.taskDefinition | .containerDefinitions[0].image = $IMAGE | del(.taskDefinitionArn) | del(.revision) | del(.status) | del(.requiresAttributes) | del(.compatibilities)')
+NEW_TASK_INFO=$(aws ecs register-task-definition --region "$AWS_DEFAULT_REGION" --cli-input-json "$NEW_TASK_DEFINTIION")
+NEW_REVISION=$(echo $NEW_TASK_INFO | jq '.taskDefinition.revision')
+aws ecs update-service --cluster ${ECS_CLUSTER}--service ${SERVICE_NAME} --task-definition ${TASK_FAMILY}:${NEW_REVISION}
+```
