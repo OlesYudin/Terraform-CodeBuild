@@ -14,9 +14,6 @@ phases:
       - curl -s -qL -o terraform.zip https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip
       - unzip -o terraform.zip
 
-      # Install jq (tool for json, that need ECS)
-      - apt install -y jq # JQ уже существует в codebuild container
-
       # Add environment
       - REPOSITORY_URI=${ECR_APP_URL}
       - ECR_IMAGE="{REPOSITORY_URI}:${CODEBUILD_RESOLVED_SOURCE_VERSION}"
@@ -45,7 +42,7 @@ phases:
       # 3. status
       # 4. requiresAttributes
       # 5. compatibilities
-      - NEW_TASK_DEFINTIION=$(echo $TASK_DEFINITION | jq --arg IMAGE "$ECR_IMAGE" '.taskDefinition | .containerDefinitions[0].image = $IMAGE | del(.taskDefinitionArn) | del(.revision) | del(.status) | del(.requiresAttributes) | del(.compatibilities)')
+      - NEW_TASK_DEFINTIION=$(echo $TASK_DEFINITION | jq --arg IMAGE "$ECR_IMAGE" '.taskDefinition | .containerDefinitions[0].image = $IMAGE | del(.taskDefinitionArn) | del(.revision) | del(.status) | del(.requiresAttributes) | del(.compatibilities) | del(.registeredAt) | del(.registeredBy)')
       # Register new task definition
       - NEW_TASK_INFO=$(aws ecs register-task-definition --region "$AWS_REGION" --cli-input-json "$NEW_TASK_DEFINTIION")
       # Output number of revision for task definition
