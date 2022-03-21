@@ -12,6 +12,7 @@ variable "github_branch" {}     # Default branch for commiting
 
 # Codebuild
 variable "buildspec" {}               # Default path to buildspec.yml
+variable "account_id" {}              # Get AWS account id
 variable "registry_url" {}            # ECR Registri URL
 variable "task_definition_family" {}  # Name of task definition family
 variable "task_definition_cluster" {} # Name of task definition cluster

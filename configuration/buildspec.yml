@@ -15,7 +15,7 @@ phases:
       - unzip -o terraform.zip
 
       # Install jq (tool for json, that need ECS)
-      - apt install -y jq
+      - apt install -y jq # JQ уже существует в codebuild container
 
       # Add environment
       - REPOSITORY_URI=${ECR_APP_URL}

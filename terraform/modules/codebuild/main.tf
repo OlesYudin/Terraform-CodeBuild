@@ -33,6 +33,10 @@ resource "aws_codebuild_project" "password-generator-codebuild-plan" {
       value = var.region
     }
     environment_variable {
+      name  = "AWS_ACCOUNT_ID"
+      value = var.account_id
+    }
+    environment_variable {
       name  = "ECR_APP_URL"
       value = var.registry_url
     }
